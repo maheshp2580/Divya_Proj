@@ -21,6 +21,7 @@ function toggleJobTypeFields() {
 // State
 let pollingInterval = null;
 let currentViewingJobId = null;
+let lastRenderedExecutionsHtml = '';
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -207,11 +208,15 @@ function renderJobs(jobs) {
 
 function renderExecutions(executions) {
     if (executions.length === 0) {
-        executionsContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 2rem;">No executions recorded yet.</p>';
+        const emptyHtml = '<p style="color:var(--text-muted); text-align:center; padding: 2rem;">No executions recorded yet.</p>';
+        if (lastRenderedExecutionsHtml !== emptyHtml) {
+            executionsContainer.innerHTML = emptyHtml;
+            lastRenderedExecutionsHtml = emptyHtml;
+        }
         return;
     }
 
-    executionsContainer.innerHTML = executions.map(ex => {
+    const newHtml = executions.map(ex => {
         
         // Formatting dates
         const started = new Date(ex.startedAt).toLocaleString();
@@ -245,6 +250,11 @@ function renderExecutions(executions) {
         </div>
         `;
     }).join('');
+
+    if (lastRenderedExecutionsHtml !== newHtml) {
+        executionsContainer.innerHTML = newHtml;
+        lastRenderedExecutionsHtml = newHtml;
+    }
 }
 
 // Modals
@@ -260,6 +270,7 @@ function closeCreateModal() {
 function openExecutionsModal(jobId) {
     currentViewingJobId = jobId;
     executionsContainer.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></div>';
+    lastRenderedExecutionsHtml = '';
     executionsModal.classList.remove('hidden');
     loadExecutions(jobId);
 }

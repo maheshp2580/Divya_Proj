@@ -25,7 +25,7 @@ public class GeminiAnalysisService : IAiAnalysisService
             return "AI Analysis skipped: Gemini API key is missing. Please set GEMINI_API_KEY environment variable.";
         }
 
-        var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={_apiKey}";
+        var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={_apiKey}";
         var prompt = $"Analyze the following background job failure. Job Name: {jobName}. Error Message: {errorMessage}. Provide a brief, one-paragraph root cause analysis and a suggested fix.";
 
         var payload = new
