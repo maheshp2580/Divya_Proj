@@ -1,0 +1,6 @@
+@SmartJobRunner.API_HostAddress = http://localhost:5222
+
+GET {{SmartJobRunner.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

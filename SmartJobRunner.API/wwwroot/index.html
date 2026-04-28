@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alliance Health Smart Job Runner</title>
+    <!-- Modern Font: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <div class="app-container glass-panel">
+        <header>
+            <div class="header-content">
+                <h1><i class="fa-solid fa-bolt text-gradient"></i> Alliance Health Smart Job Runner</h1>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                <i class="fa-solid fa-plus"></i> New Job
+            </button>
+        </header>
+
+        <main>
+            <section class="board">
+                <div class="board-header">
+                    <h2>Configured Jobs</h2>
+                    <button class="btn btn-icon" onclick="location.reload()" title="Refresh Dashboard"><i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+                
+                <div id="jobsContainer" class="jobs-grid">
+                    <!-- Job Cards Injected Here -->
+                    <div class="loading-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Create Job Modal -->
+    <div id="createModal" class="modal-overlay hidden">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2>Create New Job</h2>
+                <button class="btn-icon close-btn" onclick="closeCreateModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="createJobForm" onsubmit="handleCreateJob(event)">
+                <div class="form-group">
+                    <label>Job Name</label>
+                    <input type="text" id="jobName" required placeholder="Data Sync Job" />
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="jobDesc" required placeholder="Synchronizes data across DBs" />
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Max Retries</label>
+                        <input type="number" id="jobRetries" value="3" min="0" max="10" />
+                    </div>
+                    <div class="form-group">
+                        <label>Base Delay (sec)</label>
+                        <input type="number" id="jobDelay" value="2" min="1" max="10" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Job Type</label>
+                    <select id="jobType" onchange="toggleJobTypeFields()" class="form-control">
+                        <option value="0">HTTP Request</option>
+                        <option value="1">Database Procedure</option>
+                    </select>
+                </div>
+
+                <div id="httpFields" class="form-group conditional-field">
+                    <label>HTTP Method</label>
+                    <select id="httpMethod" class="form-control">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                    <label style="margin-top:0.5rem">URL</label>
+                    <input type="text" id="jobUrl" placeholder="https://api.example.com/sync" />
+                    <label style="margin-top:0.5rem">Payload (JSON)</label>
+                    <input type="text" id="jobPayload" placeholder='{"key":"value"}' />
+                </div>
+
+                <div id="dbFields" class="form-group conditional-field hidden-field">
+                    <label>Stored Procedure Name</label>
+                    <input type="text" id="jobSpName" placeholder="SP_UpdateRecords" />
+                </div>
+
+                <div class="form-group">
+                    <label>Recurring Schedule (Cron Expression)</label>
+                    <input type="text" id="jobCron" placeholder="* * * * *" />
+                    <p class="helper-text">Leave blank for manual execution only.</p>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="jobSimFail" />
+                    <label for="jobSimFail">Simulate Transient/Permanent Failures (Demo)</label>
+                    <p class="helper-text">If checked, the job will randomly fail to trigger Polly retries and AI analysis.</p>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Job Executions Drawer/Modal -->
+    <div id="executionsModal" class="drawer-overlay hidden">
+        <div class="drawer glass-panel">
+            <div class="drawer-header">
+                <h2><i class="fa-solid fa-timeline"></i> Execution History</h2>
+                <button class="btn-icon close-btn" onclick="closeExecutionsModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="executionsContainer" class="executions-list">
+                <!-- Executions Injected Here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
