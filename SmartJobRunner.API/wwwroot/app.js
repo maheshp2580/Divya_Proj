@@ -136,15 +136,9 @@ async function loadExecutions(jobId) {
         const executions = await res.json();
         renderExecutions(executions);
         
-        // Polling logic: if any row is pending/running, keep polling periodically
-        const isRunning = executions.some(e => e.status === 'Pending' || e.status === 'Running');
-        if (isRunning && currentViewingJobId === jobId) {
-            clearTimeout(pollingInterval);
-            pollingInterval = setTimeout(() => loadExecutions(jobId), 1500);
-        } else {
-            clearTimeout(pollingInterval);
-            pollingInterval = null;
-        }
+        // Auto-refresh/polling logic removed per user request
+        clearTimeout(pollingInterval);
+        pollingInterval = null;
     } catch (err) {
         executionsContainer.innerHTML = '<p>Error loading executions.</p>';
     }
