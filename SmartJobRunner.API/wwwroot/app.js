@@ -136,9 +136,10 @@ async function loadExecutions(jobId) {
         const executions = await res.json();
         renderExecutions(executions);
         
-        // Auto-refresh/polling logic removed per user request
         clearTimeout(pollingInterval);
-        pollingInterval = null;
+        if (currentViewingJobId === jobId) {
+            pollingInterval = setTimeout(() => loadExecutions(jobId), 2000);
+        }
     } catch (err) {
         executionsContainer.innerHTML = '<p>Error loading executions.</p>';
     }
